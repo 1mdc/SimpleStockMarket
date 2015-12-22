@@ -1,5 +1,8 @@
 package com.hoangong;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -12,6 +15,8 @@ import java.util.stream.Collectors;
  * Created by hoangong on 21/12/2015.
  */
 public class StockSymbol {
+    final static Logger logger = LogManager.getLogger(StockSymbol.class);
+
     private final String symbol;
     private final StockType type;
     private BigDecimal lastDividend;
@@ -20,6 +25,7 @@ public class StockSymbol {
     private final List<Price> prices;
 
     public StockSymbol(String symbol, StockType type, Optional<BigDecimal> fixedDividend, BigDecimal parValue, BigDecimal lastDividend) {
+        logger.debug("Create new stock {}", symbol);
         this.symbol = symbol;
         this.type = type;
         this.fixedDividend = fixedDividend;

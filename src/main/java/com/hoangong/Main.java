@@ -1,5 +1,8 @@
 package com.hoangong;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +13,17 @@ import java.util.stream.Collectors;
 public class Main {
 
     private static List<StockSymbol> stockMarket;
+    final static Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
+        logger.info("Start application");
         preloadData();
         System.out.println("Available stocks: TEA POP ALE GIN JOE");
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Stock Symbol. Enter \"q\" to exist: ");
             String symbol = scanner.next().toUpperCase();
+            logger.debug("input symbol {}", symbol);
             if (symbol.equals("Q")) {
                 break;
             } else {
@@ -25,11 +31,15 @@ public class Main {
                 Integer quantity;
                 try {
                     System.out.print("Price: ");
-                    price = new BigDecimal(scanner.next());
+                    String t = scanner.next();
+                    logger.debug("Input price: {}", t);
+                    price = new BigDecimal(t);
                     System.out.print("Quantity: ");
-                    quantity = Integer.parseInt(scanner.next());
+                    t = scanner.next();
+                    logger.debug("Input price: {}", t);
+                    quantity = Integer.parseInt(t);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    logger.error("error price input",ex);
                     System.out.println("Price or quality should be in number format");
                     continue;
                 }
@@ -44,9 +54,11 @@ public class Main {
                 }
             }
         }
+        logger.info("Done program");
     }
 
     private static void preloadData() {
+        logger.debug("populate sample data");
         stockMarket = new ArrayList<>();
         stockMarket.add(new StockSymbol("TEA", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(0)));
         stockMarket.add(new StockSymbol("POP", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(8)));
