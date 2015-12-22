@@ -12,12 +12,21 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    private static List<StockSymbol> stockMarket;
+    private List<StockSymbol> stockMarket;
     final static Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
+        Main app = new Main();
+        app.preloadData();
+        app.run();
+    }
+
+    public void run() {
         logger.info("Start application");
-        preloadData();
+        if(this.getStockMarket().size() == 0){
+            logger.error("No data");
+            return;
+        }
         System.out.println("Available stocks: TEA POP ALE GIN JOE");
         while (true) {
             Scanner scanner = new Scanner(System.in);
@@ -43,28 +52,39 @@ public class Main {
                     System.out.println("Price or quality should be in number format");
                     continue;
                 }
-                List<StockSymbol> matchedSymbols = stockMarket.stream().filter(i -> i.getSymbol().equals(symbol)).collect(Collectors.toList());
+                List<StockSymbol> matchedSymbols = getStockMarket().stream().filter(i -> i.getSymbol().equals(symbol)).collect(Collectors.toList());
                 if (matchedSymbols.size() == 0) {
                     System.out.println("Stock symbol does not exist");
                 } else {
                     StockSymbol selected = matchedSymbols.get(0);
                     selected.addPrices(price, quantity);
                     selected.printCalculations();
-                    System.out.println("Geometric Mean: " + StockSymbol.calculateGeometricMean(stockMarket));
+                    System.out.println("Geometric Mean: " + StockSymbol.calculateGeometricMean(getStockMarket()));
                 }
             }
         }
+        doneApplication();
+    }
+
+    void doneApplication() {
         logger.info("Done program");
     }
 
-    private static void preloadData() {
+    void preloadData() {
         logger.debug("populate sample data");
-        stockMarket = new ArrayList<>();
-        stockMarket.add(new StockSymbol("TEA", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(0)));
-        stockMarket.add(new StockSymbol("POP", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(8)));
-        stockMarket.add(new StockSymbol("ALE", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(60), BigDecimal.valueOf(23)));
-        stockMarket.add(new StockSymbol("GIN", StockType.PREFERRED, Optional.of(BigDecimal.valueOf(2)), BigDecimal.valueOf(100), BigDecimal.valueOf(8)));
-        stockMarket.add(new StockSymbol("JOE", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(250), BigDecimal.valueOf(13)));
+        setStockMarket(new ArrayList<>());
+        getStockMarket().add(new StockSymbol("TEA", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(0)));
+        getStockMarket().add(new StockSymbol("POP", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(100), BigDecimal.valueOf(8)));
+        getStockMarket().add(new StockSymbol("ALE", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(60), BigDecimal.valueOf(23)));
+        getStockMarket().add(new StockSymbol("GIN", StockType.PREFERRED, Optional.of(BigDecimal.valueOf(2)), BigDecimal.valueOf(100), BigDecimal.valueOf(8)));
+        getStockMarket().add(new StockSymbol("JOE", StockType.COMMON, Optional.empty(), BigDecimal.valueOf(250), BigDecimal.valueOf(13)));
     }
 
+    public List<StockSymbol> getStockMarket() {
+        return stockMarket;
+    }
+
+    public void setStockMarket(List<StockSymbol> stockMarket) {
+        this.stockMarket = stockMarket;
+    }
 }
