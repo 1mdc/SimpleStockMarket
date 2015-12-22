@@ -98,7 +98,10 @@ public class StockSymbol {
     }
 
     BigDecimal calculatePERatio(BigDecimal price, BigDecimal diviend) {
-        return price.divide(diviend,2, RoundingMode.HALF_UP);
+        if(diviend.compareTo(BigDecimal.ZERO) == 0)
+            return BigDecimal.ZERO;
+        else
+            return price.divide(diviend,2, RoundingMode.HALF_UP);
     }
 
     BigDecimal calculateVolumeWeight(Integer time) {
